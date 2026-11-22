@@ -93,5 +93,14 @@ check "tree-height t3"     "$(show '(tree-height t3)')"     "2"
 check "tree-height ()"     "$(show "(tree-height '())")"    "0"
 check "tree-height single" "$(show '(tree-height single)')" "1"
 
+# ---- count-leaves / print-height-and-leaves (S1.c)
+check "count-leaves t1"     "$(show '(count-leaves t1)')"     "4"
+check "count-leaves ()"     "$(show "(count-leaves '())")"    "0"
+check "count-leaves single" "$(show '(count-leaves single)')" "1"
+check "print-height-and-leaves t1" "(print-height-and-leaves t1)"  "(3 4)"
+check "print-height-and-leaves t2" "(print-height-and-leaves t2)"  "(3 1)"
+check "print-height-and-leaves t3" "(print-height-and-leaves t3)"  "(2 2)"
+check "print-height-and-leaves ()" "(print-height-and-leaves '())" "(0 0)"
+
 echo "TOTAL: $pass passed, $fail failed"
 [ "$fail" -eq 0 ]

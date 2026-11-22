@@ -100,3 +100,22 @@
       0
       (+ 1 (max (tree-height (node-left tree))
                 (tree-height (node-right tree))))))
+
+;; (count-leaves tree) -> number of leaves of tree (the empty tree has none)
+;; Reading: walk adds the leaves of t to the count acc. For () nothing is added;
+;; a leaf adds 1; any other node adds the leaves of its right and then its left subtree.
+;; Tail recursive: the call on the left subtree is a tail call carrying the count;
+;; the call on the right subtree is not (a tree has two branches), depth = tree height.
+(define (count-leaves tree)
+  (let walk ((t tree) (acc 0))
+    (cond ((empty-tree? t) acc)
+          ((leaf? t) (+ acc 1))
+          (else (walk (node-left t)
+                      (walk (node-right t) acc))))))
+
+;; (print-height-and-leaves tree) -> prints the list (height leaf-count), then a newline
+;; Reading: build the two-element list from tree-height and count-leaves and display it.
+;; Tail recursive: not recursive.
+(define (print-height-and-leaves tree)
+  (display (list (tree-height tree) (count-leaves tree)))
+  (newline))
