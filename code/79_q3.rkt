@@ -89,3 +89,14 @@
   (newline)
   (display (postorder-list tree))
   (newline))
+
+;; (tree-height tree) -> height of tree: () has height 0, a node has height
+;; 1 + the larger of the heights of its two subtrees.
+;; Reading: for () the height is 0; otherwise it is one more than the max of the
+;; heights of the smaller left and right subtrees.
+;; Tail recursive: no (needs both subtree heights); recursion depth = tree height.
+(define (tree-height tree)
+  (if (empty-tree? tree)
+      0
+      (+ 1 (max (tree-height (node-left tree))
+                (tree-height (node-right tree))))))

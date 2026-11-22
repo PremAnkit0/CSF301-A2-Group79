@@ -86,5 +86,12 @@ check "print-all-traversals ()" "(print-all-traversals '())" "()
 ()
 ()"
 
+# ---- tree-height
+check "tree-height t1"     "$(show '(tree-height t1)')"     "3"
+check "tree-height t2"     "$(show '(tree-height t2)')"     "3"
+check "tree-height t3"     "$(show '(tree-height t3)')"     "2"
+check "tree-height ()"     "$(show "(tree-height '())")"    "0"
+check "tree-height single" "$(show '(tree-height single)')" "1"
+
 echo "TOTAL: $pass passed, $fail failed"
 [ "$fail" -eq 0 ]
