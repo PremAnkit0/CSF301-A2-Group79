@@ -8,7 +8,7 @@ description: Conventions, run commands, self-review checklist and known AI pitfa
 ## Language and version
 
 - **Target: SWI-Prolog 9.x.** The grader runs 9.x. Write only portable 9.x code. Do not rely on anything added later.
-- Local machine has SWI-Prolog 11.0.0 at `C:\Program Files\swipl\bin\swipl.exe` (not on PATH). Use it for testing, but don't let anything that only exists in 11.x get into the code.
+- **Tested on SWI-Prolog 11.0.0** (x64-win64, at `C:\Program Files\swipl\bin\swipl.exe`, not on PATH). The P1 and P2 code and tests were all run on 11.0.0, not 9.x. Nothing they use (`permutation/2`, `append/3`, `memberchk/2`, `findall/3`, `sort/2`, `format/2,3`, integer arithmetic, `plunit`) behaves differently between 9.x and 11.0, so we didn't downgrade. Don't add anything that only exists in versions after 9.x.
 - Solution files may only use these libraries: `lists`, `apply`, `yall`, `aggregate`. Built-in predicates (`is/2`, `between/3`, `findall/3`, `format/2,3`, `number_codes/2`, `string_concat/3`, `sort/2`, `msort/2`, …) are fine.
 
 ## Files
