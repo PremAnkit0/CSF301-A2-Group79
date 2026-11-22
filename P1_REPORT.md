@@ -38,4 +38,26 @@ Each solution was checked by hand against all eight clues, and against a second,
 1. **Which of design and testing gets the AI project** (the other one gets embedded). Solutions 1 and 3 give AI to design; solution 2 gives it to testing.
 2. **Which friend gets which role.** Alex, Carla and Dana are arranged differently in each solution, within the limits clue 7 sets for Dana (research or testing).
 
-So the puzzle is missing information. P1.c adds a ninth clue that is true in exactly one of these three solutions and false in the other two, which brings N down to 1.
+So the puzzle is missing information.
+
+## Repair (P1.c)
+
+With names removed, solutions 1 and 3 are identical: they have the same four (department, language, project) combinations, given to different people. A clue that mentions no names can't tell them apart, so the only solution such a clue can keep on its own is **solution 2**. The added clue is:
+
+```prolog
+% CLUE 9: The friend who works in the testing department prefers the AI project.
+clue(9, S) :-
+    memberchk(p(_, testing, _, Project), S),
+    Project == 'AI'.
+```
+
+It is true in solution 2 and false in solutions 1 and 3 (where the testing friend prefers embedded), so `count_solutions([1,2,3,4,5,6,7,8,9], N)` gives **N = 1**:
+
+```
+Alex = [design, java, embedded]
+Ben = [development, javascript, web]
+Carla = [testing, python, AI]
+Dana = [research, c++, data]
+```
+
+`main/0` still uses only clues 1–8, as P1.a asks, so it still prints solution 1.
