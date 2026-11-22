@@ -88,3 +88,25 @@ clue(8, S) :-
     memberchk(p(_, Dept, Lang, data), S),
     Dept == research,
     Lang \== javascript.
+
+%! satisfies_clues(+Active, +Solution) is semidet.
+%  Every clue whose number is in Active holds in Solution. Clues not in
+%  Active are ignored. With Active = [], every Solution satisfies it.
+satisfies_clues(Active, Solution) :-
+    forall(member(N, Active), clue(N, Solution)).
+
+%! main is semidet.
+%  Prints the first complete assignment (in the order candidate/1 generates
+%  them) that satisfies clues 1 to 8, in the four-line format. Fails without
+%  printing if there is none.
+main :-
+    once(( candidate(Solution),
+           satisfies_clues([1, 2, 3, 4, 5, 6, 7, 8], Solution) )),
+    print_solution(Solution).
+
+%! print_solution(+Solution) is det.
+%  Writes one line "Name = [Dept, Lang, Project]" per friend, in list order.
+%  ~w writes atoms without quotes, so 'c++' and 'AI' print as c++ and AI.
+print_solution(Solution) :-
+    forall(member(p(Name, Dept, Lang, Project), Solution),
+           format("~w = [~w, ~w, ~w]~n", [Name, Dept, Lang, Project])).
