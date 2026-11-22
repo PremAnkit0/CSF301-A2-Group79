@@ -102,5 +102,26 @@ check "print-height-and-leaves t2" "(print-height-and-leaves t2)"  "(3 1)"
 check "print-height-and-leaves t3" "(print-height-and-leaves t3)"  "(2 2)"
 check "print-height-and-leaves ()" "(print-height-and-leaves '())" "(0 0)"
 
+# ---- big trees (speed / deep recursion). Built by helpers in the test, not in the code file.
+# chain: 1000 nodes, each with only a right child (height 1000, 1 leaf)
+# full:  complete tree of height 10 (1023 nodes, 512 leaves), values all 1
+BIG="
+(define (chain i n) (if (> i n) '() (list i '() (chain (+ i 1) n))))
+(define chain1000 (chain 1 1000))
+(define (full h) (if (= h 0) '() (list 1 (full (- h 1)) (full (- h 1)))))
+(define full10 (full 10))
+"
+SEQ="($(seq -s' ' 1 1000))"
+REV="($(seq -s' ' 1000 -1 1))"
+ONES="($(yes 1 | head -1023 | tr '\n' ' ' | sed 's/ $//'))"
+start=$(date +%s.%N)
+check "1000-node chain print-all-traversals" "$BIG (print-all-traversals chain1000)" "$SEQ
+$SEQ
+$REV"
+check "1000-node chain height and leaves" "$BIG (print-height-and-leaves chain1000)" "(1000 1)"
+check "1023-node full tree inorder" "$BIG (print-inorder full10)" "$ONES"
+check "1023-node full tree height and leaves" "$BIG (print-height-and-leaves full10)" "(10 512)"
+echo "big tree tests took $(echo "$(date +%s.%N) - $start" | bc) s (4 racket runs)"
+
 echo "TOTAL: $pass passed, $fail failed"
 [ "$fail" -eq 0 ]
