@@ -81,5 +81,26 @@ check "make-inserter on ()"     "$(show "((make-inserter 7 (lambda (k) (< k 3)))
 check "make-inserter length checked before insert" "$(show "((make-inserter 'x (lambda (k) (< k 2))) '(1))")" "(x 1)"
 check "make-inserter same as insert-if-short on example 2" "$(show "((make-inserter 0 (lambda (k) (< k 3))) '(((1) 2) (3) ((4 5 6) ())))")" "((0 (0 1) 2) (0 3) (0 (4 5 6) (0)))"
 
+# ---- stress tests (S2-7). Big inputs are built by helpers here, not in the code file.
+# timed NAME CALLS EXPECTED [STDIN]: like check, and also prints the run time
+timed() {
+  local t0=$(date +%s%N)
+  check "$@"
+  echo "      time: $(( ($(date +%s%N) - t0) / 1000000 )) ms"
+}
+# (nest d): d levels of lists around (), e.g. (nest 2) = ((())); (nest 100) has 101 lists
+NEST="(define (nest d) (if (= d 0) '() (list (nest (- d 1)))))"
+exp_all="(x)"; for i in $(seq 100); do exp_all="(x $exp_all)"; done          # every list short
+exp_inner="(x)"; for i in $(seq 100); do exp_inner="($exp_inner)"; done     # only innermost () short
+FLAT="($(seq -s' ' 1 10000))"
+timed "depth 100, n=2: x into all 101 lists" "$NEST $(show "(insert-if-short 'x (nest 100) 2)")" "$exp_all"
+timed "depth 100, n=1: only innermost ()"    "$NEST $(show "(insert-if-short 'x (nest 100) 1)")" "$exp_inner"
+timed "depth 100 through stdin"              "(print-insert-result)" "$exp_all" "x $(printf '(%.0s' $(seq 100))()$(printf ')%.0s' $(seq 100)) 2"
+timed "flat 10000, n=10001: x in front"      "$(show "(insert-if-short 'sym (make-range 10000) 10001)")" "(sym ${FLAT:1}"
+timed "flat 10000, n=10000: unchanged"       "$(show "(insert-if-short 'sym (make-range 10000) 10000)")" "$FLAT"
+timed "flat 10000, n=5: unchanged"           "$(show "(insert-if-short 'sym (make-range 10000) 5)")" "$FLAT"
+timed "flat 10000 through stdin, x symbol"   "(print-insert-result)" "(sym ${FLAT:1}" "sym $FLAT 20000"
+timed "10000 sublists of length 1, n=2"      "$(show "(my-length (insert-if-short 'q (my-map (lambda (i) (list i)) (make-range 10000)) 2))")" "10000"
+
 echo "TOTAL: $pass passed, $fail failed"
 [ "$fail" -eq 0 ]
