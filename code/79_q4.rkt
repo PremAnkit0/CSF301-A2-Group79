@@ -32,22 +32,6 @@
         (my-reverse acc)
         (walk (cdr l) (cons (f (car l)) acc)))))
 
-;; (insert-if-short x lst n) -> lst with x put at the front of every list, at every
-;; level, whose ORIGINAL length is less than n.
-;; Reading: first handle each top-level element: a list (pair or ()) is processed
-;; recursively, an atom stays. Then, if lst itself had fewer than n elements before
-;; any insertion, put x in front of the processed list.
-;; Tail recursive: no; it recurses once per nesting level (my-map handles the width).
-(define (insert-if-short x lst n)
-  (let ((done (my-map (lambda (e)
-                        (if (or (pair? e) (null? e))
-                            (insert-if-short x e n)
-                            e))
-                      lst)))
-    (if (< (my-length lst) n)
-        (cons x done)
-        done)))
-
 ;; (print-insert-result) -> reads x, lst and n from standard input (in that order),
 ;; prints (insert-if-short x lst n) and a newline, and nothing else.
 ;; Reading: let* forces the three reads to happen one after another, x first.
@@ -76,3 +60,10 @@
                         (cons x done)
                         done)))))
     ins))
+
+;; (insert-if-short x lst n) -> lst with x put at the front of every list, at every
+;; level, whose ORIGINAL length is less than n.
+;; Reading: it is the inserter for x whose length test is "k < n".
+;; Tail recursive: not recursive itself (see make-inserter).
+(define (insert-if-short x lst n)
+  ((make-inserter x (lambda (k) (< k n))) lst))
