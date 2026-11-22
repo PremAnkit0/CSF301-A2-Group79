@@ -29,3 +29,24 @@
   (and (not (empty-tree? tree))
        (empty-tree? (node-left tree))
        (empty-tree? (node-right tree))))
+
+;; (inorder-list tree) -> list of the values of tree in inorder (left, node, right)
+;; Reading: walk puts the inorder values of t in front of acc. For () that is acc;
+;; for a node it is the left values, then the node value, then the right values,
+;; so the right subtree is walked first (into acc) and the left subtree last.
+;; Uses an accumulator instead of append. Tail recursive: the outer call to walk is
+;; a tail call; the inner call on the right subtree is not (depth = tree height).
+(define (inorder-list tree)
+  (let walk ((t tree) (acc '()))
+    (if (empty-tree? t)
+        acc
+        (walk (node-left t)
+              (cons (node-value t)
+                    (walk (node-right t) acc))))))
+
+;; (print-inorder tree) -> prints the inorder list of tree, then a newline
+;; Reading: build the inorder list, display it, end the line.
+;; Tail recursive: not recursive.
+(define (print-inorder tree)
+  (display (inorder-list tree))
+  (newline))

@@ -52,5 +52,13 @@ check "leaf? ()"             "$(show '(leaf? t0)')"        "#f"
 check "leaf? t2 (right child only)" "$(show '(leaf? t2)')" "#f"
 check "leaf? (node-left t3)" "$(show '(leaf? (node-left t3))')" "#t"
 
+# ---- inorder-list / print-inorder (S1.a)
+check "print-inorder t1"  "(print-inorder t1)"  "(1 2 3 4 5 6 7)"
+check "print-inorder t2"  "(print-inorder t2)"  "(1 2 3)"
+check "print-inorder t3"  "(print-inorder t3)"  "(b a c)"
+check "print-inorder ()"  "(print-inorder '())" "()"
+check "print-inorder single" "(print-inorder single)" "(9)"
+check "inorder-list t1 is a list" "$(show '(inorder-list t1)')" "(1 2 3 4 5 6 7)"
+
 echo "TOTAL: $pass passed, $fail failed"
 [ "$fail" -eq 0 ]
