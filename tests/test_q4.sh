@@ -54,5 +54,16 @@ check "my-map 10000: length"     "$(show "(my-length (my-map (lambda (x) (* x 2)
 check "my-map 10000: first and last in order" "$(show "(let ((r (my-map (lambda (x) (* x 2)) (make-range 10000)))) (list (car r) (car (my-reverse r))))")" "(2 20000)"
 check "my-reverse 10000: first" "$(show "(car (my-reverse (make-range 10000)))")" "10000"
 
+# ---- insert-if-short (assignment examples)
+check "insert-if-short example 1" "$(show "(insert-if-short 42 '((1 2) (3 4 5) (6) ()) 3)")" "((42 1 2) (3 4 5) (42 6) (42))"
+check "insert-if-short example 2" "$(show "(insert-if-short 0 '(((1) 2) (3) ((4 5 6) ())) 3)")" "((0 (0 1) 2) (0 3) (0 (4 5 6) (0)))"
+check "insert-if-short example 3" "$(show "(insert-if-short 7 '() 3)")" "(7)"
+check "insert-if-short example 4" "$(show "(insert-if-short 7 '() 0)")" "()"
+# ---- insert-if-short (own edge cases)
+check "insert-if-short top level counted too" "$(show "(insert-if-short 'x '(1 2) 3)")" "(x 1 2)"
+check "insert-if-short n=0 changes nothing"   "$(show "(insert-if-short 'x '((1) (()) 2) 0)")" "((1) (()) 2)"
+check "insert-if-short length = n not short"  "$(show "(insert-if-short 9 '(1 2 3) 3)")" "(1 2 3)"
+check "insert-if-short nested empty lists"    "$(show "(insert-if-short 'z '(()) 2)")" "(z (z))"
+
 echo "TOTAL: $pass passed, $fail failed"
 [ "$fail" -eq 0 ]
