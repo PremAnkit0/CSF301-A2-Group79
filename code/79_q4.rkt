@@ -58,3 +58,21 @@
          (n (read)))
     (display (insert-if-short x lst n))
     (newline)))
+
+;; (make-inserter x len-ok?) -> a function of one list that puts x at the front of
+;; every list, at every level, whose ORIGINAL length k satisfies (len-ok? k).
+;; Reading: ins first handles each top-level element (a list, pair or (), is passed
+;; to ins again; an atom stays), then puts x in front when the original length of
+;; this list passes len-ok?. letrec lets ins call itself.
+;; Tail recursive: no; it recurses once per nesting level (my-map handles the width).
+(define (make-inserter x len-ok?)
+  (letrec ((ins (lambda (lst)
+                  (let ((done (my-map (lambda (e)
+                                        (if (or (pair? e) (null? e))
+                                            (ins e)
+                                            e))
+                                      lst)))
+                    (if (len-ok? (my-length lst))
+                        (cons x done)
+                        done)))))
+    ins))

@@ -72,5 +72,14 @@ check "print-insert-result example 3" "(print-insert-result)" "(7)" "7 () 3"
 check "print-insert-result example 4" "(print-insert-result)" "()" "7 () 0"
 check "print-insert-result input on 3 lines" "(print-insert-result)" "(a (a 1) 2)" $'a\n((1) 2)\n3\n'
 
+# ---- make-inserter (S2.c)
+check "make-inserter returns a function" "$(show "((make-inserter 'x (lambda (k) #t)) '(1 (2)))")" "(x 1 (x 2))"
+check "make-inserter len > 2"   "$(show "((make-inserter 'x (lambda (k) (> k 2))) '((1 2 3) (4 5) 6))")" "(x (x 1 2 3) (4 5) 6)"
+check "make-inserter len = 0"   "$(show "((make-inserter 'e (lambda (k) (= k 0))) '(() (1 ()) 2))")" "((e) (1 (e)) 2)"
+check "make-inserter never"     "$(show "((make-inserter 'x (lambda (k) #f)) '(1 (2 (3))))")" "(1 (2 (3)))"
+check "make-inserter on ()"     "$(show "((make-inserter 7 (lambda (k) (< k 3))) '())")" "(7)"
+check "make-inserter length checked before insert" "$(show "((make-inserter 'x (lambda (k) (< k 2))) '(1))")" "(x 1)"
+check "make-inserter same as insert-if-short on example 2" "$(show "((make-inserter 0 (lambda (k) (< k 3))) '(((1) 2) (3) ((4 5 6) ())))")" "((0 (0 1) 2) (0 3) (0 (4 5 6) (0)))"
+
 echo "TOTAL: $pass passed, $fail failed"
 [ "$fail" -eq 0 ]
