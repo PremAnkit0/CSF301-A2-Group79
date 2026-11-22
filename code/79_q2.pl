@@ -48,3 +48,58 @@ combine(L, LV, R, RV, L/R, V) :-
     RV =\= 0,
     LV mod RV =:= 0,
     V is LV // RV.
+
+%! op_prec(?Op, ?Prec) is nondet.
+%  Prec is the precedence of operator Op: * and / bind tighter (2) than
+%  + and - (1).
+op_prec(+, 1).
+op_prec(-, 1).
+op_prec(*, 2).
+op_prec(/, 2).
+
+%! expr_string(+Expr, -String) is det.
+%  String is the canonical text of the tree Expr: decimal numbers, no
+%  spaces, and parentheses only where the rules need them. Each different
+%  tree gives a different string.
+%  Base case: a number is written as itself, never in parentheses.
+%  Recursive case: write both operands (each in parentheses if
+%  needs_parens/3 says so) with the operator between them.
+expr_string(N, S) :-
+    integer(N),
+    number_string(N, S).
+expr_string(Expr, S) :-
+    compound(Expr),
+    Expr =.. [Op, L, R],
+    op_prec(Op, P),
+    operand_string(L, P, left, LS),
+    operand_string(R, P, right, RS),
+    format(string(S), "~w~w~w", [LS, Op, RS]).
+
+%! operand_string(+Expr, +ParentPrec, +Side, -String) is det.
+%  String is the canonical text of Expr used as the Side (left or right)
+%  operand of an operator with precedence ParentPrec. It is in parentheses
+%  exactly when needs_parens/3 holds.
+operand_string(Expr, ParentPrec, Side, S) :-
+    expr_string(Expr, Inner),
+    (   needs_parens(Expr, ParentPrec, Side)
+    ->  format(string(S), "(~w)", [Inner])
+    ;   S = Inner
+    ).
+
+%! needs_parens(+Expr, +ParentPrec, +Side) is semidet.
+%  Expr has to be in parentheses as the Side operand of an operator with
+%  precedence ParentPrec. Operators are left-associative, so:
+%  - a left operand needs them only if its operator binds less tightly;
+%  - a right operand needs them if its operator binds less tightly or the
+%    same;
+%  - a number never needs them (it has no operator, so neither rule holds).
+needs_parens(Expr, ParentPrec, left) :-
+    compound(Expr),
+    Expr =.. [Op, _, _],
+    op_prec(Op, P),
+    P < ParentPrec.
+needs_parens(Expr, ParentPrec, right) :-
+    compound(Expr),
+    Expr =.. [Op, _, _],
+    op_prec(Op, P),
+    P =< ParentPrec.
