@@ -95,6 +95,18 @@ clue(8, S) :-
 satisfies_clues(Active, Solution) :-
     forall(member(N, Active), clue(N, Solution)).
 
+%! count_solutions(+Active, -N) is det.
+%  N is the number of complete assignments that satisfy every clue in Active,
+%  ignoring all other clues. candidate/1 gives each assignment exactly once
+%  and satisfies_clues/2 succeeds at most once, so findall/3 collects each
+%  solution exactly once.
+count_solutions(Active, N) :-
+    findall(Solution,
+            ( candidate(Solution),
+              satisfies_clues(Active, Solution) ),
+            Solutions),
+    length(Solutions, N).
+
 %! main is semidet.
 %  Prints the first complete assignment (in the order candidate/1 generates
 %  them) that satisfies clues 1 to 8, in the four-line format. Fails without
