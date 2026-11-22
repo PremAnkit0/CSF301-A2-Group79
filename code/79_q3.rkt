@@ -50,3 +50,16 @@
 (define (print-inorder tree)
   (display (inorder-list tree))
   (newline))
+
+;; (preorder-list tree) -> list of the values of tree in preorder (node, left, right)
+;; Reading: walk puts the preorder values of t in front of acc. For () that is acc;
+;; for a node it is the node value, then the left values, then the right values.
+;; Uses an accumulator instead of append. Tail recursive: no (the cons waits for
+;; the walks of the subtrees); recursion depth is the tree height.
+(define (preorder-list tree)
+  (let walk ((t tree) (acc '()))
+    (if (empty-tree? t)
+        acc
+        (cons (node-value t)
+              (walk (node-left t)
+                    (walk (node-right t) acc))))))

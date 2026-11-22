@@ -60,5 +60,11 @@ check "print-inorder ()"  "(print-inorder '())" "()"
 check "print-inorder single" "(print-inorder single)" "(9)"
 check "inorder-list t1 is a list" "$(show '(inorder-list t1)')" "(1 2 3 4 5 6 7)"
 
+# ---- preorder-list
+check "preorder-list t1" "$(show '(preorder-list t1)')"  "(4 2 1 3 6 5 7)"
+check "preorder-list t2" "$(show '(preorder-list t2)')"  "(1 2 3)"
+check "preorder-list t3" "$(show '(preorder-list t3)')"  "(a b c)"
+check "preorder-list ()" "$(show "(preorder-list '())")" "()"
+
 echo "TOTAL: $pass passed, $fail failed"
 [ "$fail" -eq 0 ]
