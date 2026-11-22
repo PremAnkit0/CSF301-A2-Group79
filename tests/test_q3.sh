@@ -66,5 +66,11 @@ check "preorder-list t2" "$(show '(preorder-list t2)')"  "(1 2 3)"
 check "preorder-list t3" "$(show '(preorder-list t3)')"  "(a b c)"
 check "preorder-list ()" "$(show "(preorder-list '())")" "()"
 
+# ---- postorder-list
+check "postorder-list t1" "$(show '(postorder-list t1)')"  "(1 3 2 5 7 6 4)"
+check "postorder-list t2" "$(show '(postorder-list t2)')"  "(3 2 1)"
+check "postorder-list t3" "$(show '(postorder-list t3)')"  "(b c a)"
+check "postorder-list ()" "$(show "(postorder-list '())")" "()"
+
 echo "TOTAL: $pass passed, $fail failed"
 [ "$fail" -eq 0 ]

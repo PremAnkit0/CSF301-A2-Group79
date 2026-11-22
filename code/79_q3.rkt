@@ -63,3 +63,17 @@
         (cons (node-value t)
               (walk (node-left t)
                     (walk (node-right t) acc))))))
+
+;; (postorder-list tree) -> list of the values of tree in postorder (left, right, node)
+;; Reading: walk puts the postorder values of t in front of acc. For () that is acc;
+;; for a node it is the left values, then the right values, then the node value,
+;; so the node value is consed onto acc first and the left subtree is walked last.
+;; Uses an accumulator instead of append. Tail recursive: the outer call to walk is
+;; a tail call; the inner call on the right subtree is not (depth = tree height).
+(define (postorder-list tree)
+  (let walk ((t tree) (acc '()))
+    (if (empty-tree? t)
+        acc
+        (walk (node-left t)
+              (walk (node-right t)
+                    (cons (node-value t) acc))))))
