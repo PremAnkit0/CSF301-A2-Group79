@@ -62,3 +62,29 @@ clue(4, S) :-
     memberchk(p('Ben', Dept, _, Project), S),
     Project == web,
     Dept \== testing.
+% 5. The friend whose favorite language is Java works in the design
+%    department.
+clue(5, S) :-
+    memberchk(p(_, Dept, java, _), S),
+    Dept == design.
+% 6. Carla's project preference is not embedded, and her department is not
+%    development.
+clue(6, S) :-
+    memberchk(p('Carla', Dept, _, Project), S),
+    Project \== embedded,
+    Dept \== development.
+% 7. Dana's favorite language is not Java, and she works in research or
+%    testing.
+clue(7, S) :-
+    memberchk(p('Dana', Dept, Lang, _), S),
+    Lang \== java,
+    (   Dept == research
+    ->  true
+    ;   Dept == testing
+    ).
+% 8. The friend who prefers data projects works in research and does not use
+%    JavaScript.
+clue(8, S) :-
+    memberchk(p(_, Dept, Lang, data), S),
+    Dept == research,
+    Lang \== javascript.
