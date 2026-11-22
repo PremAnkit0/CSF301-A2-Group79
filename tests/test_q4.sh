@@ -65,5 +65,12 @@ check "insert-if-short n=0 changes nothing"   "$(show "(insert-if-short 'x '((1)
 check "insert-if-short length = n not short"  "$(show "(insert-if-short 9 '(1 2 3) 3)")" "(1 2 3)"
 check "insert-if-short nested empty lists"    "$(show "(insert-if-short 'z '(()) 2)")" "(z (z))"
 
+# ---- print-insert-result (S2.a), input on stdin exactly as in the assignment
+check "print-insert-result example 1" "(print-insert-result)" "((42 1 2) (3 4 5) (42 6) (42))" "42 ((1 2) (3 4 5) (6) ()) 3"
+check "print-insert-result example 2" "(print-insert-result)" "((0 (0 1) 2) (0 3) (0 (4 5 6) (0)))" "0 (((1) 2) (3) ((4 5 6) ())) 3"
+check "print-insert-result example 3" "(print-insert-result)" "(7)" "7 () 3"
+check "print-insert-result example 4" "(print-insert-result)" "()" "7 () 0"
+check "print-insert-result input on 3 lines" "(print-insert-result)" "(a (a 1) 2)" $'a\n((1) 2)\n3\n'
+
 echo "TOTAL: $pass passed, $fail failed"
 [ "$fail" -eq 0 ]

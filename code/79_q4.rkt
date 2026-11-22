@@ -47,3 +47,14 @@
     (if (< (my-length lst) n)
         (cons x done)
         done)))
+
+;; (print-insert-result) -> reads x, lst and n from standard input (in that order),
+;; prints (insert-if-short x lst n) and a newline, and nothing else.
+;; Reading: let* forces the three reads to happen one after another, x first.
+;; Tail recursive: not recursive.
+(define (print-insert-result)
+  (let* ((x (read))
+         (lst (read))
+         (n (read)))
+    (display (insert-if-short x lst n))
+    (newline)))
