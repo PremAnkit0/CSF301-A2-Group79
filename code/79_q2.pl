@@ -103,3 +103,40 @@ needs_parens(Expr, ParentPrec, right) :-
     Expr =.. [Op, _, _],
     op_prec(Op, P),
     P =< ParentPrec.
+
+%! equation(+List, -Equation) is nondet.
+%  Equation is the canonical string "L=R" of a valid equation over List:
+%  List is split into non-empty parts LeftNums and RightNums, L is a tree
+%  over LeftNums, R is a tree over RightNums, and both have the same
+%  integer value. On backtracking it gives every valid equation. It fails
+%  for lists with fewer than two numbers (split_list/3 fails).
+equation(List, Equation) :-
+    split_list(List, LeftNums, RightNums),
+    expr(LeftNums, LeftExpr, Value),
+    expr(RightNums, RightExpr, RightValue),
+    Value =:= RightValue,
+    expr_string(LeftExpr, LeftStr),
+    expr_string(RightExpr, RightStr),
+    format(string(Equation), "~w=~w", [LeftStr, RightStr]).
+
+%! generate_equation(+List, ?Equation) is semidet.
+%  Equation is a valid equation for List (the first one found). Fails,
+%  without looping or raising an error, if List has no valid equation,
+%  including when it has fewer than two numbers.
+generate_equation(List, Equation) :-
+    once(equation(List, Equation)).
+
+%! all_equations(+List, -Equations) is det.
+%  Equations is the list of every valid equation for List, without
+%  duplicates, in standard order of terms (sort/2). It is [] if there are
+%  none.
+all_equations(List, Equations) :-
+    findall(Equation, equation(List, Equation), Found),
+    sort(Found, Equations).
+
+%! count_equations(+List, -N) is det.
+%  N is the number of valid equations for List, i.e. the length of the
+%  list all_equations/2 gives.
+count_equations(List, N) :-
+    all_equations(List, Equations),
+    length(Equations, N).
