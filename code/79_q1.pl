@@ -34,3 +34,31 @@ candidate([p('Alex',  D1, L1, P1),
     permutation(Langs, [L1, L2, L3, L4]),
     projects(Projects),
     permutation(Projects, [P1, P2, P3, P4]).
+
+%! clue(+N, +Solution) is semidet.
+%  Clue number N holds in the fully filled-in Solution.
+%  Each clause first finds the one friend the clue is about (memberchk/2,
+%  since every value occurs exactly once), then checks that friend's other
+%  attributes with ==/\== so nothing in Solution gets bound. It succeeds at
+%  most once, so findall/3 counts every solution once.
+
+% 1. The friend who prefers the AI project does not work in research and is
+%    not Dana.
+clue(1, S) :-
+    memberchk(p(Name, Dept, _, 'AI'), S),
+    Dept \== research,
+    Name \== 'Dana'.
+% 2. Alex does not work in development and does not prefer C++.
+clue(2, S) :-
+    memberchk(p('Alex', Dept, Lang, _), S),
+    Dept \== development,
+    Lang \== 'c++'.
+% 3. The friend working in the testing department likes Python.
+clue(3, S) :-
+    memberchk(p(_, testing, Lang, _), S),
+    Lang == python.
+% 4. Ben prefers web projects and does not work in testing.
+clue(4, S) :-
+    memberchk(p('Ben', Dept, _, Project), S),
+    Project == web,
+    Dept \== testing.
