@@ -77,3 +77,15 @@
         (walk (node-left t)
               (walk (node-right t)
                     (cons (node-value t) acc))))))
+
+;; (print-all-traversals tree) -> prints the inorder, preorder and postorder lists
+;; of tree, each on its own line.
+;; Reading: one display + newline per traversal, in the order in, pre, post.
+;; Tail recursive: not recursive.
+(define (print-all-traversals tree)
+  (display (inorder-list tree))
+  (newline)
+  (display (preorder-list tree))
+  (newline)
+  (display (postorder-list tree))
+  (newline))

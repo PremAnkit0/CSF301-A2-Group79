@@ -72,5 +72,19 @@ check "postorder-list t2" "$(show '(postorder-list t2)')"  "(3 2 1)"
 check "postorder-list t3" "$(show '(postorder-list t3)')"  "(b c a)"
 check "postorder-list ()" "$(show "(postorder-list '())")" "()"
 
+# ---- print-all-traversals (S1.b)
+check "print-all-traversals t1" "(print-all-traversals t1)" "(1 2 3 4 5 6 7)
+(4 2 1 3 6 5 7)
+(1 3 2 5 7 6 4)"
+check "print-all-traversals t2" "(print-all-traversals t2)" "(1 2 3)
+(1 2 3)
+(3 2 1)"
+check "print-all-traversals t3" "(print-all-traversals t3)" "(b a c)
+(a b c)
+(b c a)"
+check "print-all-traversals ()" "(print-all-traversals '())" "()
+()
+()"
+
 echo "TOTAL: $pass passed, $fail failed"
 [ "$fail" -eq 0 ]
